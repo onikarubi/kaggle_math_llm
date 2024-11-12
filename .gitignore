@@ -1,0 +1,3 @@
+.env.local
+.pytest_cache
+__pycache__

@@ -1,0 +1,9 @@
+langchain
+langchain_community
+langchain-core
+langchain-huggingface
+langchain-text-splitters
+pydantic
+pypdf
+vllm
+polars
