@@ -22,22 +22,6 @@ class MathProblemPredictor:
         self.model = model
         self.parser = PydanticOutputParser(pydantic_object=ResponseSchema)
 
-    def submit_answer(self, id_: pl.DataFrame, question: pl.DataFrame) -> pl.DataFrame | pd.DataFrame:
-        """
-        Submit an answer to a problem.
-
-        Args:
-            id_: The ID of the problem as a Polars DataFrame.
-            question: The question as a Polars DataFrame.
-
-        Returns:
-            A Polars DataFrame with the answer to the problem.
-        """
-        id_: str = id_.item(0)
-        question: str = question.item(0)
-        prediction = self.predict(question)
-        return pl.DataFrame({"id": id_, "answer": 0})
-
     def predict(self, problem: str) -> ResponseSchema:
         """
         Predict the solution to a math problem.
