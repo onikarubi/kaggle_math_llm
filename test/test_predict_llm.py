@@ -1,33 +1,43 @@
-import abc
-import os
-from langchain_core.language_models import BaseLLM
-from langchain_community.llms.vllm import VLLM
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.language_models import BaseChatModel
+from src.predict_lllm import BasicLLMParams, ChatGenPredictModel, PredictLLMFactory, PredictLLMType
+import os
+import utils.logger_config as logger_config
+import logging
+import pytest
+
+logger = logger_config.setup_logger(__name__, logging.StreamHandler, logging.DEBUG)
+
+test_gen_model = "gemini-1.5-flash-latest"
+@pytest.fixture
+def default_llm_args():
+    params = BasicLLMParams()
+    return params.model_dump()
+
+@pytest.fixture
+def valid_gen_llm_args():
+    return {
+        "max_tokens": 512,
+        "top_p": 0.7,
+    }
+
+def test_config_model_params(default_llm_args, valid_gen_llm_args):
+    model = ChatGenPredictModel(model_id=test_gen_model)
+    assert model.model_id == test_gen_model
+    assert model.model_args == default_llm_args
+    default_valid_args = model._combined_args()
+    assert default_valid_args == default_llm_args
+
+    valid_args = model._combined_args(valid_gen_llm_args)
+    assert valid_args != default_llm_args
+
+def test_llm_create(default_llm_args):
+    llm = PredictLLMFactory.create_llm(
+        llm_type=PredictLLMType.CHATGEN,
+        model_id=test_gen_model,
+    )
+    logger.debug(f"llm: {llm}")
+    assert isinstance(llm, BaseChatModel)
 
 
-class BasePredictLlM(metaclass=abc.ABCMeta):
-    def __init__(self, model_id: str, model_args=None):
-        self.model_id = model_id
-        self.model_args = model_args
 
-    @abc.abstractmethod
-    def create_llm(self) -> BaseLLM:
-        raise NotImplementedError
-
-
-class ChatGenPredictLLM(BasePredictLLM):
-    def __init__(self, model_id: str, model_args=None):
-        super().__init__(model_id, model_args)
-        self.api_key = os.getenv('GOOGLE_API_KEY')
-
-        if self.api_key is None:
-            raise ValueError('GOOGLE_API_KEY is not set')
-
-    def create_llm(self):
-        llm = ChatGenPredictLLM()
-
-
-class PredictLLMFactory:
-    @classmethod
-    def create_llm(cls, llm_type: str, model_id: str, model_args=None):
-        pass

@@ -22,6 +22,7 @@ def load_llm():
     return llm
 
 def test_load_env():
+    
     assert os.path.exists(csv_file)
     assert GOOGLE_GENERATIVE_MODEL is not None
 
