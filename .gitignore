@@ -1,3 +1,4 @@
 .env.local
 .pytest_cache
 __pycache__
+submission.parquet
