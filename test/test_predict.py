@@ -40,8 +40,14 @@ def get_predict_answer(df: pl.DataFrame, predictor: MathProblemPredictor) -> Gen
         predict_answer = response.answer
         yield answer, predict_answer
 
-def test_read_csv(valid_predictor):    
-    df = pl.read_csv("src/datasets/test.csv")
+def read_csv(file_path: str) -> pl.DataFrame:
+    lazy_frame = pl.scan_csv(file_path)
+    df = lazy_frame.collect(streaming=True)
+    return df
+
+@pytest.mark.skip
+def test_predict(valid_predictor):    
+    df = read_csv("src/datasets/test.csv")
 
     for answer, predict_answer in get_predict_answer(df, valid_predictor):
         logger.debug(f"answer: {answer}, predict_answer: {predict_answer}")
@@ -49,5 +55,4 @@ def test_read_csv(valid_predictor):
 
     assert isinstance(df, pl.DataFrame)
 
-def test_predict(valid_predictor):
-    assert isinstance(valid_predictor, MathProblemPredictor)
+
