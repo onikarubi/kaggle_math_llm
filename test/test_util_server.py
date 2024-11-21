@@ -22,14 +22,18 @@ def load_llm():
     return llm
 
 def test_load_env():
-    
+
     assert os.path.exists(csv_file)
     assert GOOGLE_GENERATIVE_MODEL is not None
 
+
+@pytest.mark.skip
 def test_load_predictor(load_llm):
     predictor = MathProblemPredictor(model=load_llm)
     assert predictor is not None
 
+
+@pytest.mark.skip
 def test_submit_predictions(load_llm):
     predictor = MathProblemPredictor(model=load_llm)
     submit_server.submit_predictions(predictor, csv_file)

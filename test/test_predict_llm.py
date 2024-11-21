@@ -1,6 +1,6 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.language_models import BaseChatModel
-from src.predict_lllm import BasicLLMParams, ChatGenPredictModel, PredictLLMFactory, PredictLLMType
+from src.predict_llm import BasicLLMParams, ChatGenPredictModel, PredictLLMFactory, PredictLLMType
 import os
 import utils.logger_config as logger_config
 import logging

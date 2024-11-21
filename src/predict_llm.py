@@ -25,7 +25,7 @@ class BasicLLMParams(BaseModel):
     max_tokens: int = Field(default=1024)
     temperature: float = Field(default=0.7)
     top_p: float = Field(default=1.0, gt=0.0, le=1.0)
-    top_k: int = Field(default=50)
+    top_k: int = Field(default=40)
 
 
 class BasePredictModel(metaclass=abc.ABCMeta):
