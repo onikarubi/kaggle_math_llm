@@ -15,10 +15,10 @@ logger = setup_logger(__name__, logging.StreamHandler, logging.DEBUG)
 test_gen_model = "gemini-1.5-flash-8b"
 model_args = {
     'max_tokens': 1024,
-    'temperature': 0.7,
+    'temperature': 0,
 }
 problem = "What is $1-1$?"
-reference_csv = "src/datasets/test.csv"
+reference_csv = "src/datasets/reference.csv"
 
 
 def get_answer(df: pl.DataFrame, row: dict):
@@ -52,18 +52,19 @@ def predictor_with_structured_output():
     return predictor
 
 def test_read_predictor(predictor_with_structured_output):
-    df = read_csv("src/datasets/test.csv")
-
-    for answer, predict_answer in get_predict_answer(df, predictor_with_structured_output):
-        logger.debug(f"answer: {answer}, predict_answer: {predict_answer}")
-        assert answer == predict_answer
-
-@pytest.mark.skip
-def test_predict(valid_predictor):    
     df = read_csv(reference_csv)
 
-    for answer, predict_answer in get_predict_answer(df, valid_predictor):
+    for answer, predict_answer in get_predict_answer(
+        df, predictor_with_structured_output
+    ):
         logger.debug(f"answer: {answer}, predict_answer: {predict_answer}")
-        assert answer == predict_answer
+        try:
+            assert answer == predict_answer
+            logger.info('Successfully read and predicted')
+        except AssertionError:
+            logger.error(
+                f"Prediction failed: Expected {answer}, but got {predict_answer}"
+            )
+            raise
 
     assert isinstance(df, pl.DataFrame)
