@@ -1,11 +1,18 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 from src.predict import MathProblemPredictor
+from src.predict_llm import PredictLLMType
+from src.utils.local_predictions import LocalPredictions
 import src.utils.submit_server as submit_server
 import dotenv
 import os
 import pytest
 
 dotenv.load_dotenv('.env.local')
+local_predictions = LocalPredictions(
+    model_type=PredictLLMType.CHATGEN,
+    model_id=os.getenv("GOOGLE_GENERATIVE_MODEL"),
+    reference_csv="src/datasets/reference.csv"
+)
 
 GOOGLE_GENERATIVE_MODEL = os.getenv("GOOGLE_GENERATIVE_MODEL")
 csv_file = "src/datasets/test.csv"

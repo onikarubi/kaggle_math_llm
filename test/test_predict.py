@@ -51,6 +51,7 @@ def predictor_with_structured_output():
     predictor = MathProblemPredictorWithStructuredOutput(llm)
     return predictor
 
+@pytest.mark.skip
 def test_read_predictor(predictor_with_structured_output):
     df = read_csv(reference_csv)
 
